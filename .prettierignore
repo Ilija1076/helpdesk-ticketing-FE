@@ -1,0 +1,10 @@
+.next
+out
+build
+node_modules
+package-lock.json
+src/lib/api/schema.d.ts
+
+# Managed block written by the Next.js tooling, not ours to reformat.
+AGENTS.md
+CLAUDE.md
