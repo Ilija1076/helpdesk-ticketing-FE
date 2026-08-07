@@ -5,6 +5,9 @@ node_modules
 package-lock.json
 src/lib/api/schema.d.ts
 
+# Copied verbatim from the backend so the two stay diffable.
+openapi.json
+
 # Managed block written by the Next.js tooling, not ours to reformat.
 AGENTS.md
 CLAUDE.md
