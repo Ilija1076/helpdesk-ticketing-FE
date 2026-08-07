@@ -1,6 +1,8 @@
 'use client';
 
+import { LogOut } from 'lucide-react';
 import { useActionState } from 'react';
+import { Button } from '@/components/ui/button';
 import { logout } from '@/lib/auth/actions';
 
 export function LogoutButton() {
@@ -10,13 +12,10 @@ export function LogoutButton() {
 
   return (
     <form action={action}>
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 disabled:opacity-60 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-      >
+      <Button type="submit" variant="outline" size="sm" disabled={pending}>
+        <LogOut />
         {pending ? 'Signing out…' : 'Sign out'}
-      </button>
+      </Button>
     </form>
   );
 }
