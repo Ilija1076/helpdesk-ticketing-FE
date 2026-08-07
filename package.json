@@ -10,7 +10,9 @@
     "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "api:spec": "curl -sf http://localhost:3000/docs-json -o openapi.json",
+    "api:types": "openapi-typescript openapi.json -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
     "next": "16.2.12",
