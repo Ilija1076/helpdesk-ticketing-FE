@@ -51,6 +51,13 @@ export type TicketListQuery = NonNullable<
 export type TicketSortField = NonNullable<TicketListQuery['sortBy']>;
 export type SortOrder = NonNullable<TicketListQuery['sortOrder']>;
 
+export const TICKET_SORT_FIELDS = [
+  'createdAt',
+  'updatedAt',
+  'priority',
+  'resolutionDueAt',
+] as const satisfies readonly TicketSortField[];
+
 export const TICKET_STATUSES = [
   'OPEN',
   'IN_PROGRESS',
