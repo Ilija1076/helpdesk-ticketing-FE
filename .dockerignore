@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+.env*
+!.env.example
+npm-debug.log*
+README.md
+AGENTS.md
+CLAUDE.md
+**/*.test.ts
+**/*.test.tsx
+vitest.config.mts
+vitest.setup.ts

@@ -40,3 +40,19 @@ jobs:
           npm run api:types
           git diff --exit-code src/lib/api/schema.d.ts \
             || (echo "::error::schema.d.ts is stale. Run 'npm run api:types' and commit the result." && exit 1)
+
+  docker:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
