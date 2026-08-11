@@ -1,49 +1,33 @@
 import { Badge } from '@/components/ui/badge';
 import type { SlaClock, TicketPriority, TicketStatus } from '@/lib/api/types';
 import { formatDateTime, formatDuration, slaState, type SlaState } from '@/lib/sla';
+import { PRIORITY_HUE, PRIORITY_LABELS, STATUS_HUE, STATUS_LABELS } from '@/lib/tickets/palette';
 import { cn } from '@/lib/utils';
 
-const STATUS_LABELS: Record<TicketStatus, string> = {
-  OPEN: 'Open',
-  IN_PROGRESS: 'In progress',
-  WAITING_ON_CUSTOMER: 'Waiting on customer',
-  RESOLVED: 'Resolved',
-  CLOSED: 'Closed',
-};
-
-const STATUS_STYLES: Record<TicketStatus, string> = {
-  OPEN: 'border-blue-500/30 bg-blue-500/10 text-blue-700 dark:text-blue-300',
-  IN_PROGRESS: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300',
-  WAITING_ON_CUSTOMER: 'border-purple-500/30 bg-purple-500/10 text-purple-700 dark:text-purple-300',
-  RESOLVED: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
-  CLOSED: 'border-border bg-muted text-muted-foreground',
-};
+/**
+ * The dot carries the colour, the text stays in ink. A light categorical hue is illegible
+ * as text on the surface, and this way the badge reads the same in both themes without a
+ * second set of text colours.
+ */
+function Dot({ hue }: { hue: string }) {
+  return (
+    <span aria-hidden className="size-2 shrink-0 rounded-full" style={{ backgroundColor: hue }} />
+  );
+}
 
 export function StatusBadge({ status }: { status: TicketStatus }) {
   return (
-    <Badge variant="outline" className={cn('font-medium', STATUS_STYLES[status])}>
+    <Badge variant="outline" className="gap-1.5 font-medium">
+      <Dot hue={STATUS_HUE[status]} />
       {STATUS_LABELS[status]}
     </Badge>
   );
 }
 
-const PRIORITY_LABELS: Record<TicketPriority, string> = {
-  LOW: 'Low',
-  MEDIUM: 'Medium',
-  HIGH: 'High',
-  URGENT: 'Urgent',
-};
-
-const PRIORITY_STYLES: Record<TicketPriority, string> = {
-  LOW: 'border-border bg-muted text-muted-foreground',
-  MEDIUM: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
-  HIGH: 'border-orange-500/30 bg-orange-500/10 text-orange-700 dark:text-orange-300',
-  URGENT: 'border-red-500/40 bg-red-500/15 text-red-700 dark:text-red-300',
-};
-
 export function PriorityBadge({ priority }: { priority: TicketPriority }) {
   return (
-    <Badge variant="outline" className={cn('font-medium', PRIORITY_STYLES[priority])}>
+    <Badge variant="outline" className="gap-1.5 font-medium">
+      <Dot hue={PRIORITY_HUE[priority]} />
       {PRIORITY_LABELS[priority]}
     </Badge>
   );

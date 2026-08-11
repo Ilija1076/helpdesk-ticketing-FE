@@ -1,4 +1,4 @@
-import type { Comment, CreateCommentBody, Paginated } from './types';
+import type { Comment, CreateCommentBody, Paginated, TicketStats } from './types';
 
 /**
  * Browser-side calls go to this app's own /api routes, never to NestJS. Cookies ride along
@@ -37,4 +37,8 @@ export function postComment(ticketId: string, body: CreateCommentBody): Promise<
     method: 'POST',
     body: JSON.stringify(body),
   });
+}
+
+export function fetchStats(): Promise<TicketStats> {
+  return request<TicketStats>('/api/stats');
 }

@@ -117,6 +117,51 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/*
+ * Data-visualisation palette.
+ *
+ * Categorical slots 1-5 carry ticket status; they are identity slots assigned in a fixed
+ * order, not colours chosen to "mean" anything. Both sets were run through the palette
+ * validator against this app's card surfaces (#ffffff light, oklch(0.205 0 0) dark) and
+ * pass the lightness band, chroma floor, CVD separation and normal-vision floor in both
+ * modes. Light mode returns a contrast warning for aqua, yellow and magenta, so every
+ * chart using them ships visible labels and counts rather than relying on the fill alone.
+ *
+ * The sequential ramp encodes priority, which is ordered rather than nominal: one hue,
+ * light to dark on the light surface and dark to light on the dark one, so "more urgent"
+ * always reads as further from the surface. The dark ramp is stepped up from the
+ * reference values because this surface is lighter than the one they were chosen for.
+ */
+:root {
+  --viz-1: #2a78d6;
+  --viz-2: #eb6834;
+  --viz-3: #1baf7a;
+  --viz-4: #eda100;
+  --viz-5: #e87ba4;
+
+  --viz-critical: #d03b3b;
+
+  --viz-seq-1: #86b6ef;
+  --viz-seq-2: #5598e7;
+  --viz-seq-3: #2a78d6;
+  --viz-seq-4: #184f95;
+}
+
+.dark {
+  --viz-1: #3987e5;
+  --viz-2: #d95926;
+  --viz-3: #199e70;
+  --viz-4: #c98500;
+  --viz-5: #d55181;
+
+  --viz-critical: #d03b3b;
+
+  --viz-seq-1: #256abf;
+  --viz-seq-2: #3987e5;
+  --viz-seq-3: #6da7ec;
+  --viz-seq-4: #b7d3f6;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

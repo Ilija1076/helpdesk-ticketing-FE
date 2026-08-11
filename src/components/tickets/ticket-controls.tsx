@@ -21,14 +21,7 @@ import {
   type TicketStatus,
 } from '@/lib/api/types';
 import { changeAssignee, changePriority, changeStatus } from '@/lib/tickets/actions';
-
-const STATUS_LABELS: Record<TicketStatus, string> = {
-  OPEN: 'Open',
-  IN_PROGRESS: 'In progress',
-  WAITING_ON_CUSTOMER: 'Waiting on customer',
-  RESOLVED: 'Resolved',
-  CLOSED: 'Closed',
-};
+import { PRIORITY_LABELS, STATUS_LABELS } from '@/lib/tickets/palette';
 
 const UNASSIGNED = '__unassigned__';
 
@@ -106,7 +99,7 @@ export function TicketControls({ ticket, agents }: { ticket: Ticket; agents: Aut
           <SelectContent>
             {TICKET_PRIORITIES.map((priority) => (
               <SelectItem key={priority} value={priority}>
-                {priority[0] + priority.slice(1).toLowerCase()}
+                {PRIORITY_LABELS[priority]}
               </SelectItem>
             ))}
           </SelectContent>

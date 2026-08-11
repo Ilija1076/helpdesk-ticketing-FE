@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
+import { requireUser } from '@/lib/auth/dal';
 
-/** The queue is the landing screen for both roles; the dashboard comes later. */
-export default function HomePage() {
-  redirect('/tickets');
+/** Agents land on queue health; clients land on their own tickets. */
+export default async function HomePage() {
+  const user = await requireUser();
+  redirect(user.role === 'AGENT' ? '/dashboard' : '/tickets');
 }

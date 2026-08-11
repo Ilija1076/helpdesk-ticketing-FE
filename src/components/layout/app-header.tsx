@@ -5,9 +5,13 @@ import { AppNav, type NavItem } from './app-nav';
 import { UserMenu } from './user-menu';
 
 export function AppHeader({ user }: { user: AuthUser }) {
-  const items: NavItem[] = [
-    { href: '/tickets', label: user.role === 'AGENT' ? 'Queue' : 'My tickets' },
-  ];
+  const items: NavItem[] =
+    user.role === 'AGENT'
+      ? [
+          { href: '/dashboard', label: 'Dashboard' },
+          { href: '/tickets', label: 'Queue' },
+        ]
+      : [{ href: '/tickets', label: 'My tickets' }];
 
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 border-b backdrop-blur">
