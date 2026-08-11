@@ -14,7 +14,15 @@ export type RegisterBody = Schemas['RegisterDto'];
 export type TicketParty = Schemas['TicketPartyDto'];
 export type SlaClock = Schemas['SlaClockDto'];
 export type TicketStats = Schemas['TicketStatsDto'];
-export type CreateTicketBody = Schemas['CreateTicketDto'];
+/**
+ * Unlike the `policyName` and `assigneeId` cases, the spec is right here: `priority` is
+ * absent from CreateTicketDto's `required` list. openapi-typescript is what marks it
+ * mandatory, because it treats any property carrying a `default` as guaranteed — true of a
+ * response the server fills in, wrong for a request body we are the ones sending.
+ */
+export type CreateTicketBody = Omit<Schemas['CreateTicketDto'], 'priority'> & {
+  priority?: TicketPriority;
+};
 
 /**
  * Same backend annotation gap as `policyName`: `@ApiPropertyOptional({ nullable: true })`

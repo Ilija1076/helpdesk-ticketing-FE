@@ -1,6 +1,9 @@
+import { Plus } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Suspense } from 'react';
 import { Pagination } from '@/components/tickets/pagination';
+import { Button } from '@/components/ui/button';
 import { TicketFilters } from '@/components/tickets/ticket-filters';
 import { TicketTable } from '@/components/tickets/ticket-table';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -28,13 +31,21 @@ export default async function TicketsPage({
 
   return (
     <div className="grid gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{isAgent ? 'All tickets' : 'My tickets'}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          {isAgent
-            ? 'Everything in the queue, with both SLA clocks.'
-            : 'Tickets you have raised, with their SLA deadlines.'}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold">{isAgent ? 'All tickets' : 'My tickets'}</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            {isAgent
+              ? 'Everything in the queue, with both SLA clocks.'
+              : 'Tickets you have raised, with their SLA deadlines.'}
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/tickets/new">
+            <Plus />
+            New ticket
+          </Link>
+        </Button>
       </div>
 
       <TicketFilters showQueueFilters={isAgent} />
