@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+
+    env:
+      # No page fetches the API at build time — every route is server-rendered on demand —
+      # but the value has to resolve for the module to load.
+      API_BASE_URL: http://localhost:3000/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run format:check
+
+      - run: npm run lint
+
+      - run: npm run typecheck
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: Check generated API types are up to date
+        run: |
+          npm run api:types
+          git diff --exit-code src/lib/api/schema.d.ts \
+            || (echo "::error::schema.d.ts is stale. Run 'npm run api:types' and commit the result." && exit 1)
