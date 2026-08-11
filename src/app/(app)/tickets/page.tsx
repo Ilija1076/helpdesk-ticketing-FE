@@ -55,11 +55,11 @@ async function TicketResults({
   params: SearchParams;
   showRequester: boolean;
 }) {
-  const { data, meta } = await listTickets(parseQuery(params));
+  const { data, meta, fetchedAt } = await listTickets(parseQuery(params));
 
   return (
     <div className="grid gap-4">
-      <TicketTable tickets={data} showRequester={showRequester} />
+      <TicketTable tickets={data} showRequester={showRequester} now={fetchedAt} />
       <Pagination meta={meta} searchParams={params} />
     </div>
   );

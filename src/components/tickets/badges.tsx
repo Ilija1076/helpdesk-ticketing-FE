@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import type { SlaClock, TicketPriority, TicketStatus } from '@/lib/api/types';
-import { formatDateTime, formatDuration, slaState } from '@/lib/sla';
+import { formatDateTime, formatDuration, slaState, type SlaState } from '@/lib/sla';
 import { cn } from '@/lib/utils';
 
 const STATUS_LABELS: Record<TicketStatus, string> = {
@@ -50,8 +50,8 @@ export function PriorityBadge({ priority }: { priority: TicketPriority }) {
 }
 
 /** One SLA clock — either first response or resolution. */
-export function SlaBadge({ clock, label }: { clock: SlaClock; label: string }) {
-  const state = slaState(clock);
+export function SlaBadge({ clock, label, now }: { clock: SlaClock; label: string; now: number }) {
+  const state = slaState(clock, now);
 
   if (state.kind === 'none') {
     return <span className="text-muted-foreground text-xs">—</span>;
@@ -67,7 +67,7 @@ export function SlaBadge({ clock, label }: { clock: SlaClock; label: string }) {
 }
 
 function describe(
-  state: Exclude<ReturnType<typeof slaState>, { kind: 'none' }>,
+  state: Exclude<SlaState, { kind: 'none' }>,
   label: string,
 ): { className: string; text: string; title: string } {
   switch (state.kind) {
@@ -87,7 +87,7 @@ function describe(
       return {
         className: 'text-red-600 dark:text-red-400',
         // Past the deadline, but the sweeper has not stamped it yet.
-        text: `Overdue ${formatDuration(Math.round((Date.now() - state.dueAt.getTime()) / 60_000))}`,
+        text: `Overdue ${formatDuration(state.minutesOver)}`,
         title: `${label} was due ${formatDateTime(state.dueAt)}`,
       };
     case 'due': {

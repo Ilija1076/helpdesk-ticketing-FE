@@ -1,27 +1,34 @@
 import type { SlaClock, Ticket } from './api/types';
 
-export type SlaState =
-  | { kind: 'none' }
-  | { kind: 'met'; at: Date }
-  | { kind: 'breached'; at: Date }
-  | { kind: 'overdue'; dueAt: Date }
-  | { kind: 'due'; dueAt: Date; minutesLeft: number };
-
 /**
  * `overdue` and `breached` are deliberately different states. The backend stamps
  * `breachedAt` from a BullMQ job that sweeps on an interval, so a ticket can be past its
  * deadline for up to one scan before it is formally marked. Showing that gap as "breached"
  * would claim something the API has not recorded yet.
  */
-export function slaState(clock: SlaClock): SlaState {
+export type SlaState =
+  | { kind: 'none' }
+  | { kind: 'met'; at: Date }
+  | { kind: 'breached'; at: Date }
+  | { kind: 'overdue'; dueAt: Date; minutesOver: number }
+  | { kind: 'due'; dueAt: Date; minutesLeft: number };
+
+/**
+ * `now` is a parameter rather than a `Date.now()` call inside, for two reasons: reading the
+ * clock during render is impure and React's lint rules reject it, and every countdown on a
+ * page should be measured against one instant so two rows cannot disagree by a minute.
+ */
+export function slaState(clock: SlaClock, now: number): SlaState {
   if (clock.breachedAt) return { kind: 'breached', at: new Date(clock.breachedAt) };
   if (clock.metAt) return { kind: 'met', at: new Date(clock.metAt) };
   if (!clock.dueAt) return { kind: 'none' };
 
   const dueAt = new Date(clock.dueAt);
-  const minutesLeft = Math.round((dueAt.getTime() - Date.now()) / 60_000);
+  const minutes = Math.round((dueAt.getTime() - now) / 60_000);
 
-  return minutesLeft <= 0 ? { kind: 'overdue', dueAt } : { kind: 'due', dueAt, minutesLeft };
+  return minutes <= 0
+    ? { kind: 'overdue', dueAt, minutesOver: -minutes }
+    : { kind: 'due', dueAt, minutesLeft: minutes };
 }
 
 export function isBreached(ticket: Ticket): boolean {

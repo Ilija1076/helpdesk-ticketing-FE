@@ -33,7 +33,7 @@ export async function proxy(request: NextRequest) {
   // No refresh token means no session worth reviving.
   if (!refreshToken) {
     if (isPublicPath) return NextResponse.next();
-    return redirectToLogin(request);
+    return unauthenticated(request);
   }
 
   if (!isAccessTokenStale(accessToken)) {
@@ -44,7 +44,7 @@ export async function proxy(request: NextRequest) {
 
   if (!tokens) {
     // Rejected, reused or the backend is down — drop the session and start over.
-    const response = isPublicPath ? NextResponse.next() : redirectToLogin(request);
+    const response = isPublicPath ? NextResponse.next() : unauthenticated(request);
     response.cookies.delete(ACCESS_COOKIE);
     response.cookies.delete(REFRESH_COOKIE);
     return response;
@@ -69,7 +69,16 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
-function redirectToLogin(request: NextRequest) {
+/**
+ * The BFF routes under /api are called by TanStack Query, which cannot follow a redirect to
+ * an HTML login page — it would parse the markup as JSON and fail with a confusing error.
+ * Those get a 401 to react to; page navigations get the redirect.
+ */
+function unauthenticated(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return NextResponse.json({ message: 'Session expired' }, { status: 401 });
+  }
+
   const url = new URL('/login', request.nextUrl);
   // Send the user back where they were headed once they are through the login form.
   if (request.nextUrl.pathname !== '/') {

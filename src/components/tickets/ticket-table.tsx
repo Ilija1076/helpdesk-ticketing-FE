@@ -14,9 +14,12 @@ import { PriorityBadge, SlaBadge, StatusBadge } from './badges';
 export function TicketTable({
   tickets,
   showRequester,
+  now,
 }: {
   tickets: Ticket[];
   showRequester: boolean;
+  /** One instant for the whole table, so no two rows disagree about the countdown. */
+  now: number;
 }) {
   if (tickets.length === 0) {
     return (
@@ -71,10 +74,10 @@ export function TicketTable({
                 {ticket.assignee?.name ?? <span className="italic">Unassigned</span>}
               </TableCell>
               <TableCell>
-                <SlaBadge clock={ticket.sla.firstResponse} label="First response" />
+                <SlaBadge clock={ticket.sla.firstResponse} label="First response" now={now} />
               </TableCell>
               <TableCell>
-                <SlaBadge clock={ticket.sla.resolution} label="Resolution" />
+                <SlaBadge clock={ticket.sla.resolution} label="Resolution" now={now} />
               </TableCell>
               <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
                 {formatDateTime(ticket.createdAt)}

@@ -15,7 +15,15 @@ export type TicketParty = Schemas['TicketPartyDto'];
 export type SlaClock = Schemas['SlaClockDto'];
 export type TicketStats = Schemas['TicketStatsDto'];
 export type CreateTicketBody = Schemas['CreateTicketDto'];
-export type UpdateTicketBody = Schemas['UpdateTicketDto'];
+
+/**
+ * Same backend annotation gap as `policyName`: `@ApiPropertyOptional({ nullable: true })`
+ * with no `type` emits an untyped object, so the spec claims `assigneeId` is a
+ * `Record<string, never>`. It is a UUID, and `null` means unassign.
+ */
+export type UpdateTicketBody = Omit<Schemas['UpdateTicketDto'], 'assigneeId'> & {
+  assigneeId?: string | null;
+};
 export type CreateCommentBody = Schemas['CreateCommentDto'];
 export type Comment = Schemas['CommentDto'];
 
